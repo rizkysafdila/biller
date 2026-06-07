@@ -412,7 +412,11 @@ export function BillForm({
           onValueChange={(v) => setPaidById((v as string) || null)}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Pilih siapa yang bayar" />
+            <SelectValue placeholder="Pilih siapa yang bayar">
+              {(value) =>
+                participants.find((p) => p.id === value)?.name ?? ""
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {participants.map((p) => (
