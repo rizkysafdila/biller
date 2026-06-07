@@ -10,8 +10,14 @@ const PUBLIC_PATHS = ["/login"];
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Public read-only share pages and the login page need no session.
-  if (pathname.startsWith("/share") || PUBLIC_PATHS.includes(pathname)) {
+  // Public routes: share pages, login, the offline fallback, and PWA assets.
+  if (
+    pathname.startsWith("/share") ||
+    pathname === "/offline" ||
+    pathname === "/sw.js" ||
+    pathname === "/manifest.webmanifest" ||
+    PUBLIC_PATHS.includes(pathname)
+  ) {
     return NextResponse.next();
   }
 

@@ -3,6 +3,7 @@ import { Receipt } from "lucide-react";
 import { requireUser } from "@/lib/dal";
 import { AppNav } from "@/components/app-nav";
 import { LogoutButton } from "@/components/logout-button";
+import { InstallPrompt } from "@/components/install-prompt";
 
 export default async function AppLayout({
   children,
@@ -27,6 +28,7 @@ export default async function AppLayout({
       </header>
 
       <main className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-24">
+        <InstallPrompt />
         {children}
       </main>
 
