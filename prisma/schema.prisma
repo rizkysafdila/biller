@@ -1,0 +1,124 @@
+// Patungan data model.
+//
+// One owner (User) keeps a roster of Friends. A hangout (Session) gathers a
+// subset of those friends as SessionParticipants and holds one or more Bills
+// (one per venue). Each Bill has Items, and each Item is shared between
+// participants via ItemShare. Money fields are integer rupiah.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  passwordHash String?
+  createdAt    DateTime  @default(now())
+
+  friends  Friend[]
+  sessions Session[]
+}
+
+model Friend {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  avatarColor String?
+  phone       String?
+  // The owner participates in hangouts too, modelled as a Friend with this flag.
+  isOwner     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  participations SessionParticipant[]
+
+  @@index([userId])
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  title      String
+  date       DateTime @default(now())
+  note       String?
+  // Public read-only share link token. Null until the user shares the session.
+  shareToken String?  @unique
+  createdAt  DateTime @default(now())
+
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  participants SessionParticipant[]
+  bills        Bill[]
+
+  @@index([userId])
+}
+
+model SessionParticipant {
+  id        String   @id @default(cuid())
+  sessionId String
+  friendId  String
+  createdAt DateTime @default(now())
+
+  session    Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  friend     Friend      @relation(fields: [friendId], references: [id], onDelete: Cascade)
+  billsPaid  Bill[]      @relation("BillPayer")
+  itemShares ItemShare[]
+
+  @@unique([sessionId, friendId])
+  @@index([sessionId])
+}
+
+model Bill {
+  id              String   @id @default(cuid())
+  sessionId       String
+  merchantName    String
+  paidById        String?
+  taxAmount       Int      @default(0)
+  serviceAmount   Int      @default(0)
+  discountAmount  Int      @default(0)
+  currency        String   @default("IDR")
+  receiptImageUrl String?
+  rawOcr          Json?
+  createdAt       DateTime @default(now())
+
+  session Session             @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  paidBy  SessionParticipant? @relation("BillPayer", fields: [paidById], references: [id], onDelete: SetNull)
+  items   Item[]
+
+  @@index([sessionId])
+}
+
+model Item {
+  id        String @id @default(cuid())
+  billId    String
+  name      String
+  quantity  Int    @default(1)
+  unitPrice Int    @default(0)
+  lineTotal Int    @default(0)
+  position  Int    @default(0)
+
+  bill   Bill        @relation(fields: [billId], references: [id], onDelete: Cascade)
+  shares ItemShare[]
+
+  @@index([billId])
+}
+
+model ItemShare {
+  id            String @id @default(cuid())
+  itemId        String
+  participantId String
+  weight        Int    @default(1)
+
+  item        Item               @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  participant SessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, participantId])
+  @@index([itemId])
+  @@index([participantId])
+}

@@ -1,0 +1,53 @@
+
+> patungan@0.1.0 dev D:\Code\patungan
+> next dev
+
+▲ Next.js 16.2.7 (Turbopack)
+- Local:         http://localhost:3939
+- Network:       http://169.254.81.78:3939
+- Environments: .env
+✓ Ready in 2.5s
+
+○ Compiling /login ...
+ GET /login 200 in 5.1s (next.js: 4.3s, proxy.ts: 407ms, application-code: 375ms)
+ POST /api/ocr 401 in 1770ms (next.js: 1730ms, application-code: 41ms)
+ GET /login 200 in 171ms (next.js: 9ms, proxy.ts: 26ms, application-code: 137ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/login" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html
+                          lang="id"
++                         className="plus_jakarta_sans_17dda396-module__jUmiRq__variable h-full antialiased"
+-                         className="plus_jakarta_sans_17dda396-module__jUmiRq__variable h-full antialiased light"
+-                         style={{color-scheme:"light"}}
+                        >
+                  ...
+ 
+ ELIFECYCLE  Command failed with exit code 4294967295.

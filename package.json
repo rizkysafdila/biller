@@ -1,0 +1,67 @@
+{
+  "name": "patungan",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.5.0",
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/client": "^6.16.2",
+    "@vercel/blob": "^2.4.0",
+    "bcryptjs": "^3.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "jose": "^6.2.3",
+    "lucide-react": "^1.17.0",
+    "nanoid": "^5.1.11",
+    "next": "16.2.7",
+    "next-themes": "^0.4.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "shadcn": "^4.10.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0",
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "prisma": "^6.16.2",
+    "tailwindcss": "^4",
+    "tsx": "^4.22.4",
+    "typescript": "^5",
+    "vitest": "^4.1.8"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}
