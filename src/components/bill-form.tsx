@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Camera,
+  Upload,
   Plus,
   Trash2,
   Loader2,
@@ -84,6 +85,7 @@ export function BillForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [scanning, setScanning] = useState(false);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [merchantName, setMerchantName] = useState(initial?.merchantName ?? "");
@@ -170,6 +172,12 @@ export function BillForm({
     }
   }
 
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) handleScan(file);
+    e.target.value = ""; // allow re-selecting the same file
+  }
+
   function handleSubmit() {
     const data = {
       merchantName,
@@ -217,33 +225,51 @@ export function BillForm({
         </h1>
       </div>
 
-      {/* OCR scan */}
+      {/* OCR scan — camera (mobile) or pick from file explorer/gallery */}
       <input
-        ref={fileRef}
+        ref={cameraRef}
         type="file"
         accept="image/*"
         capture="environment"
         hidden
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleScan(file);
-          e.target.value = "";
-        }}
+        onChange={handleFileChange}
       />
-      <Button
-        type="button"
-        variant="outline"
-        size="lg"
-        onClick={() => fileRef.current?.click()}
-        disabled={scanning}
-      >
-        {scanning ? (
-          <Loader2 className="animate-spin" />
-        ) : (
-          <Camera />
-        )}
-        {scanning ? "Membaca struk..." : "Scan struk (OCR)"}
-      </Button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={handleFileChange}
+      />
+      <div className="flex flex-col gap-1.5">
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={() => cameraRef.current?.click()}
+            disabled={scanning}
+          >
+            {scanning ? <Loader2 className="animate-spin" /> : <Camera />}
+            Kamera
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={() => fileRef.current?.click()}
+            disabled={scanning}
+          >
+            {scanning ? <Loader2 className="animate-spin" /> : <Upload />}
+            Upload file
+          </Button>
+        </div>
+        <p className="text-muted-foreground text-center text-xs">
+          {scanning
+            ? "Membaca struk..."
+            : "Scan struk biar item & harga ke-isi otomatis."}
+        </p>
+      </div>
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="merchant">Nama tempat</Label>
