@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="id" className={`${sans.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="bg-muted/30 min-h-full">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
