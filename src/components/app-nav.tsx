@@ -16,20 +16,29 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-background/95 fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="mx-auto flex max-w-md items-stretch justify-around">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      {/* Floating "liquid glass" pill */}
+      <div
+        className={cn(
+          "pointer-events-auto flex w-full max-w-sm items-stretch justify-around gap-1 rounded-full p-1.5",
+          // Glass surface: translucent fill + heavy blur, with an opaque fallback.
+          "bg-background/70 supports-backdrop-filter:bg-background/55 backdrop-blur-xl",
+          // Edge + depth: hairline border, inset top highlight, soft drop shadow.
+          "border border-white/30 ring-1 ring-white/10 ring-inset shadow-lg shadow-black/10",
+          "dark:border-white/10 dark:ring-white/5 dark:shadow-black/40",
+        )}
+      >
         {ITEMS.map(({ href, label, icon: Icon }) => {
-          const active =
-            pathname === href || pathname.startsWith(`${href}/`);
+          const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
               key={href}
               href={href}
               className={cn(
-                "flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors",
+                "flex flex-1 flex-col items-center gap-1 rounded-full py-2 text-[0.7rem] font-medium transition-colors",
                 active
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground",
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
               )}
             >
               <Icon className="size-5" />
