@@ -5,6 +5,7 @@ import { AppNav } from "@/components/app-nav";
 import { LogoutButton } from "@/components/logout-button";
 import { InstallPrompt } from "@/components/install-prompt";
 import { NavProgress } from "@/components/nav-progress";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function AppLayout({
   children,
@@ -25,7 +26,10 @@ export default async function AppLayout({
             </span>
             Patungan
           </Link>
-          <LogoutButton />
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <LogoutButton />
+          </div>
         </div>
       </header>
 
