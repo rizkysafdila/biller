@@ -34,7 +34,12 @@ export function SpendAnalysis({ months }: { months: MonthlySpending[] }) {
   if (months.length === 0) {
     return (
       <div className="flex flex-col gap-4">
-        <h1 className="text-xl font-bold">Analisis Pengeluaran</h1>
+        <div>
+          <h1 className="text-xl font-bold">Analisis Pengeluaran</h1>
+          <p className="text-muted-foreground text-sm">
+            Lihat pengeluaran bulanan tiap orang.
+          </p>
+        </div>
         <EmptyState
           icon={ChartColumn}
           title="Belum ada data"
@@ -54,7 +59,12 @@ export function SpendAnalysis({ months }: { months: MonthlySpending[] }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="text-xl font-bold">Analisis Pengeluaran</h1>
+      <div>
+        <h1 className="text-xl font-bold">Analisis Pengeluaran</h1>
+        <p className="text-muted-foreground text-sm">
+          Lihat pengeluaran bulanan tiap orang.
+        </p>
+      </div>
 
       {/* Month selector */}
       <div className="flex items-center justify-between">
