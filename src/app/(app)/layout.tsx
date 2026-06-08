@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/dal";
 import { AppNav } from "@/components/app-nav";
 import { LogoutButton } from "@/components/logout-button";
 import { InstallPrompt } from "@/components/install-prompt";
+import { NavProgress } from "@/components/nav-progress";
 
 export default async function AppLayout({
   children,
@@ -15,6 +16,7 @@ export default async function AppLayout({
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <NavProgress />
       <header className="bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold">

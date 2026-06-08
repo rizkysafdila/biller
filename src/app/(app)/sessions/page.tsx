@@ -28,7 +28,7 @@ export default async function SessionsPage() {
             Tiap sesi bisa punya banyak bill dari tempat berbeda.
           </p>
         </div>
-        <Button render={<Link href="/sessions/new" />} size="sm">
+        <Button render={<Link href="/sessions/new" />} nativeButton={false} size="sm">
           <Plus /> Sesi
         </Button>
       </div>
@@ -39,7 +39,7 @@ export default async function SessionsPage() {
           title="Belum ada sesi"
           description="Bikin sesi nongkrong pertamamu, terus tambahin bill dari tiap tempat."
           action={
-            <Button render={<Link href="/sessions/new" />} size="sm">
+            <Button render={<Link href="/sessions/new" />} nativeButton={false} size="sm">
               <Plus /> Sesi baru
             </Button>
           }

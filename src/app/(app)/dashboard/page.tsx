@@ -35,6 +35,7 @@ export default async function DashboardPage() {
           </h1>
           <Button
             render={<Link href="/sessions/new" />}
+            nativeButton={false}
             variant="secondary"
             size="lg"
             className="mt-4 w-full"
@@ -49,7 +50,7 @@ export default async function DashboardPage() {
 
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Sesi terakhir</h2>
-        <Button render={<Link href="/sessions" />} variant="ghost" size="sm">
+        <Button render={<Link href="/sessions" />} nativeButton={false} variant="ghost" size="sm">
           Semua <ArrowRight />
         </Button>
       </div>

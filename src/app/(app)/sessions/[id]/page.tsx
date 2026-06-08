@@ -74,7 +74,7 @@ export default async function SessionDetailPage({
 
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Bill</h2>
-        <Button render={<Link href={`/sessions/${view.id}/bills/new`} />} size="sm">
+        <Button render={<Link href={`/sessions/${view.id}/bills/new`} />} nativeButton={false} size="sm">
           <Plus /> Tambah bill
         </Button>
       </div>
@@ -85,7 +85,7 @@ export default async function SessionDetailPage({
           title="Belum ada bill"
           description="Tambahkan bill dari tiap tempat yang kalian datangi. Bisa scan struk biar cepat."
           action={
-            <Button render={<Link href={`/sessions/${view.id}/bills/new`} />} size="sm">
+            <Button render={<Link href={`/sessions/${view.id}/bills/new`} />} nativeButton={false} size="sm">
               <Plus /> Tambah bill
             </Button>
           }
