@@ -167,6 +167,16 @@ export async function getSessionView(
   return session ? toView(session) : null;
 }
 
+/** Load every session owned by `userId`, each with settlement computed. */
+export async function getAllSessionViews(userId: string): Promise<SessionView[]> {
+  const sessions = await db.session.findMany({
+    where: { userId },
+    orderBy: { date: "desc" },
+    include: includeShape,
+  });
+  return sessions.map(toView);
+}
+
 /** Load a session by its public share token (no auth), with settlement. */
 export async function getSharedSessionView(
   token: string,
