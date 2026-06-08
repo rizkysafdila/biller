@@ -14,15 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 export function BillActions({
   sessionId,
@@ -75,26 +73,32 @@ export function BillActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Hapus bill ini?</AlertDialogTitle>
-            <AlertDialogDescription>
+      <Drawer open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Hapus bill ini?</DrawerTitle>
+            <DrawerDescription>
               Semua item di bill ini akan ikut terhapus.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={pending}
             >
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              {pending ? "Menghapus..." : "Hapus"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmOpen(false)}
+              disabled={pending}
+            >
+              Batal
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

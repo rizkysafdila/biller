@@ -7,13 +7,12 @@ import { setShareEnabled } from "@/server/sessions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 export function ShareToggle({
   sessionId,
@@ -25,6 +24,7 @@ export function ShareToggle({
   const [token, setToken] = useState(initialToken);
   const [pending, startTransition] = useTransition();
   const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const shareUrl =
     token && typeof window !== "undefined"
@@ -52,51 +52,61 @@ export function ShareToggle({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger
-        render={
-          <Button variant="outline" size="icon-sm" aria-label="Bagikan" />
-        }
+    <>
+      <Button
+        variant="outline"
+        size="icon-sm"
+        aria-label="Bagikan"
+        onClick={() => setOpen(true)}
       >
         <Share2 />
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Bagikan hasil split</DialogTitle>
-          <DialogDescription>
-            Buat link read-only yang bisa dikirim ke grup. Mereka gak perlu
-            login.
-          </DialogDescription>
-        </DialogHeader>
+      </Button>
 
-        {token ? (
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-2">
-              <Input readOnly value={shareUrl} className="text-xs" />
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Bagikan hasil split</DrawerTitle>
+            <DrawerDescription>
+              Buat link read-only yang bisa dikirim ke grup. Mereka gak perlu
+              login.
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div className="px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+            {token ? (
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-2">
+                  <Input readOnly value={shareUrl} className="text-xs" />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={copy}
+                    aria-label="Salin"
+                  >
+                    {copied ? <Check /> : <Copy />}
+                  </Button>
+                </div>
+                <Button
+                  variant="ghost"
+                  className="text-destructive"
+                  onClick={() => toggle(false)}
+                  disabled={pending}
+                >
+                  Matikan link
+                </Button>
+              </div>
+            ) : (
               <Button
-                variant="outline"
-                size="icon"
-                onClick={copy}
-                aria-label="Salin"
+                className="w-full"
+                onClick={() => toggle(true)}
+                disabled={pending}
               >
-                {copied ? <Check /> : <Copy />}
+                <Share2 /> {pending ? "Membuat..." : "Buat link share"}
               </Button>
-            </div>
-            <Button
-              variant="ghost"
-              className="text-destructive"
-              onClick={() => toggle(false)}
-              disabled={pending}
-            >
-              Matikan link
-            </Button>
+            )}
           </div>
-        ) : (
-          <Button onClick={() => toggle(true)} disabled={pending}>
-            <Share2 /> {pending ? "Membuat..." : "Buat link share"}
-          </Button>
-        )}
-      </DialogContent>
-    </Dialog>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }

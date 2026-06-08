@@ -13,23 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { EmptyState } from "@/components/empty-state";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 interface FriendItem {
   id: string;
@@ -168,15 +158,18 @@ export function FriendsManager({ friends }: { friends: FriendItem[] }) {
         </ul>
       )}
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editing ? "Edit teman" : "Tambah teman"}</DialogTitle>
-            <DialogDescription>
+      <Drawer open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>{editing ? "Edit teman" : "Tambah teman"}</DrawerTitle>
+            <DrawerDescription>
               Nama dipakai buat nandain siapa makan apa.
-            </DialogDescription>
-          </DialogHeader>
-          <form action={handleSubmit} className="flex flex-col gap-4">
+            </DrawerDescription>
+          </DrawerHeader>
+          <form
+            action={handleSubmit}
+            className="flex flex-col gap-4 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+          >
             <div className="flex flex-col gap-2">
               <Label htmlFor="name">Nama</Label>
               <Input
@@ -198,7 +191,10 @@ export function FriendsManager({ friends }: { friends: FriendItem[] }) {
                 inputMode="tel"
               />
             </div>
-            <DialogFooter>
+            <div className="flex flex-col gap-2 pt-1">
+              <Button type="submit" disabled={pending}>
+                {pending ? "Menyimpan..." : "Simpan"}
+              </Button>
               <Button
                 type="button"
                 variant="outline"
@@ -206,38 +202,41 @@ export function FriendsManager({ friends }: { friends: FriendItem[] }) {
               >
                 Batal
               </Button>
-              <Button type="submit" disabled={pending}>
-                {pending ? "Menyimpan..." : "Simpan"}
-              </Button>
-            </DialogFooter>
+            </div>
           </form>
-        </DialogContent>
-      </Dialog>
+        </DrawerContent>
+      </Drawer>
 
-      <AlertDialog
+      <Drawer
         open={deleting !== null}
         onOpenChange={(open) => !open && setDeleting(null)}
       >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Hapus {deleting?.name}?</AlertDialogTitle>
-            <AlertDialogDescription>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Hapus {deleting?.name}?</DrawerTitle>
+            <DrawerDescription>
               Teman ini akan hilang dari daftar. Sesi yang sudah ada tidak
               terpengaruh.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={pending}
             >
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              {pending ? "Menghapus..." : "Hapus"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setDeleting(null)}
+              disabled={pending}
+            >
+              Batal
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

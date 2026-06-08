@@ -12,15 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 export function SessionMenu({ sessionId }: { sessionId: string }) {
   const [pending, startTransition] = useTransition();
@@ -54,26 +52,32 @@ export function SessionMenu({ sessionId }: { sessionId: string }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Hapus sesi ini?</AlertDialogTitle>
-            <AlertDialogDescription>
+      <Drawer open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Hapus sesi ini?</DrawerTitle>
+            <DrawerDescription>
               Semua bill dan rincian split di sesi ini akan terhapus permanen.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={pending}
             >
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              {pending ? "Menghapus..." : "Hapus"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setConfirmOpen(false)}
+              disabled={pending}
+            >
+              Batal
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }
