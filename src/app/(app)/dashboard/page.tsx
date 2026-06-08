@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus, ArrowRight, ReceiptText } from "lucide-react";
 import { requireUser } from "@/lib/dal";
-import { db } from "@/lib/db";
+import { getDashboardData } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
@@ -11,19 +11,7 @@ import { formatDate } from "@/lib/format";
 
 export default async function DashboardPage() {
   const user = await requireUser();
-
-  const [sessions, friendCount] = await Promise.all([
-    db.session.findMany({
-      where: { userId: user.id },
-      orderBy: { date: "desc" },
-      take: 5,
-      include: {
-        _count: { select: { bills: true } },
-        participants: { include: { friend: true }, take: 6 },
-      },
-    }),
-    db.friend.count({ where: { userId: user.id, isOwner: false } }),
-  ]);
+  const { sessions, friendCount } = await getDashboardData(user.id);
 
   return (
     <div className="flex flex-col gap-5">

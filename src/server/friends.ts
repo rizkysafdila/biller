@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/dal";
+import { revalidateUser } from "@/lib/cache";
 import { FriendSchema } from "@/schemas/friend";
 import { colorForName } from "@/lib/colors";
 
@@ -24,6 +25,7 @@ export async function createFriend(input: unknown): Promise<ActionResult> {
     },
   });
   revalidatePath("/friends");
+  revalidateUser(user.id);
   return { ok: true };
 }
 
@@ -45,6 +47,7 @@ export async function updateFriend(
     data: { name, phone: phone || null },
   });
   revalidatePath("/friends");
+  revalidateUser(user.id);
   return { ok: true };
 }
 
@@ -56,5 +59,6 @@ export async function deleteFriend(id: string): Promise<ActionResult> {
 
   await db.friend.delete({ where: { id } });
   revalidatePath("/friends");
+  revalidateUser(user.id);
   return { ok: true };
 }

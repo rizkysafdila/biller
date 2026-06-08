@@ -1,5 +1,7 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { getAllSessionViews } from "./session-view";
+import { userDataTag } from "./cache";
 import {
   aggregateMonthlySpending,
   type MonthlySpending,
@@ -13,23 +15,29 @@ function monthKeyOf(date: Date): string {
   return `${y}-${m}`;
 }
 
-/** Monthly consumption ranking across all of a user's sessions. */
-export async function getMonthlySpending(userId: string): Promise<MonthlySpending[]> {
-  const sessions = await getAllSessionViews(userId);
+/** Monthly consumption ranking across all of a user's sessions (cached). */
+export function getMonthlySpending(userId: string): Promise<MonthlySpending[]> {
+  return unstable_cache(
+    async () => {
+      const sessions = await getAllSessionViews(userId);
 
-  const records: SpendRecord[] = [];
-  for (const s of sessions) {
-    const monthKey = monthKeyOf(s.date);
-    for (const p of s.participants) {
-      records.push({
-        monthKey,
-        friendId: p.friendId,
-        name: p.name,
-        color: p.avatarColor,
-        amount: s.settlement.owed[p.id] ?? 0,
-      });
-    }
-  }
+      const records: SpendRecord[] = [];
+      for (const s of sessions) {
+        const monthKey = monthKeyOf(s.date);
+        for (const p of s.participants) {
+          records.push({
+            monthKey,
+            friendId: p.friendId,
+            name: p.name,
+            color: p.avatarColor,
+            amount: s.settlement.owed[p.id] ?? 0,
+          });
+        }
+      }
 
-  return aggregateMonthlySpending(records);
+      return aggregateMonthlySpending(records);
+    },
+    ["monthly-spending", userId],
+    { tags: [userDataTag(userId)], revalidate: 3600 },
+  )();
 }

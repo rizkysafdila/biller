@@ -1,5 +1,7 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { db } from "./db";
+import { userDataTag } from "./cache";
 import { colorForName } from "./colors";
 import {
   computeSessionSettlement,
@@ -155,16 +157,22 @@ function toView(session: RawSession & Record<string, unknown>): SessionView {
   };
 }
 
-/** Load a session owned by `userId`, with settlement computed. */
-export async function getSessionView(
+/** Load a session owned by `userId`, with settlement computed (cached). */
+export function getSessionView(
   sessionId: string,
   userId: string,
 ): Promise<SessionView | null> {
-  const session = await db.session.findFirst({
-    where: { id: sessionId, userId },
-    include: includeShape,
-  });
-  return session ? toView(session) : null;
+  return unstable_cache(
+    async () => {
+      const session = await db.session.findFirst({
+        where: { id: sessionId, userId },
+        include: includeShape,
+      });
+      return session ? toView(session) : null;
+    },
+    ["session-view", sessionId, userId],
+    { tags: [userDataTag(userId), `session:${sessionId}`], revalidate: 3600 },
+  )();
 }
 
 /** Load every session owned by `userId`, each with settlement computed. */

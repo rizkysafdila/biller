@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus, ReceiptText, Store, Users } from "lucide-react";
 import { requireUser } from "@/lib/dal";
-import { db } from "@/lib/db";
+import { getSessionList } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { ParticipantAvatar } from "@/components/participant-avatar";
@@ -10,14 +10,7 @@ import { formatDate } from "@/lib/format";
 
 export default async function SessionsPage() {
   const user = await requireUser();
-  const sessions = await db.session.findMany({
-    where: { userId: user.id },
-    orderBy: { date: "desc" },
-    include: {
-      _count: { select: { bills: true, participants: true } },
-      participants: { include: { friend: true }, take: 6 },
-    },
-  });
+  const sessions = await getSessionList(user.id);
 
   return (
     <div className="flex flex-col gap-4">

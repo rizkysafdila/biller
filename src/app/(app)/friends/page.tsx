@@ -1,13 +1,10 @@
 import { requireUser } from "@/lib/dal";
-import { db } from "@/lib/db";
+import { getFriends } from "@/lib/queries";
 import { FriendsManager } from "./friends-manager";
 
 export default async function FriendsPage() {
   const user = await requireUser();
-  const friends = await db.friend.findMany({
-    where: { userId: user.id },
-    orderBy: [{ isOwner: "desc" }, { createdAt: "asc" }],
-  });
+  const friends = await getFriends(user.id);
 
   return (
     <FriendsManager

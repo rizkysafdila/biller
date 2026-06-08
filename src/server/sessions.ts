@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { nanoid } from "nanoid";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/dal";
+import { revalidateUser } from "@/lib/cache";
 import { SessionSchema } from "@/schemas/session";
 import type { ActionResult } from "./friends";
 
@@ -41,6 +42,7 @@ export async function createSession(input: unknown): Promise<ActionResult> {
 
   revalidatePath("/sessions");
   revalidatePath("/dashboard");
+  revalidateUser(user.id);
   redirect(`/sessions/${session.id}`);
 }
 
@@ -52,6 +54,7 @@ export async function deleteSession(sessionId: string): Promise<ActionResult> {
   await db.session.delete({ where: { id: sessionId } });
   revalidatePath("/sessions");
   revalidatePath("/dashboard");
+  revalidateUser(user.id);
   redirect("/sessions");
 }
 
@@ -69,5 +72,6 @@ export async function setShareEnabled(
     data: { shareToken: token },
   });
   revalidatePath(`/sessions/${sessionId}`);
+  revalidateUser(user.id);
   return { ok: true, token };
 }
