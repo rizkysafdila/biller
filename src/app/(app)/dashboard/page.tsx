@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, ArrowRight, ReceiptText } from "lucide-react";
 import { requireUser } from "@/lib/dal";
 import { getDashboardData } from "@/lib/queries";
@@ -15,12 +16,23 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="bg-primary text-primary-foreground border-0">
-        <CardContent className="pt-6">
-          <p className="text-primary-foreground/80 text-sm">Halo 👋</p>
-          <h1 className="mt-1 text-lg font-bold">
-            Habis nongkrong? Yuk hitung patungannya.
-          </h1>
+      <Card className="bg-primary text-primary-foreground relative overflow-hidden border-0">
+        <Image
+          src="https://res.cloudinary.com/dcf1a75tn/image/upload/v1780941297/hero-img_nym8kh.png"
+          alt=""
+          aria-hidden
+          width={1024}
+          height={1536}
+          priority
+          className="pointer-events-none absolute right-4 bottom-0 z-0 w-40 select-none"
+        />
+        <CardContent className="relative z-10 pt-6">
+          <div className="max-w-[62%]">
+            <p className="text-primary-foreground/80 text-sm">Halo 👋</p>
+            <h1 className="mt-1 text-lg font-bold">
+              Habis nongkrong? Yuk hitung patungannya.
+            </h1>
+          </div>
           <Button
             render={<Link href="/sessions/new" />}
             nativeButton={false}
