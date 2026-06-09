@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { cn } from "@/lib/utils";
 
@@ -91,34 +90,47 @@ export function SessionForm({ friends }: { friends: FriendOption[] }) {
 
       <div className="flex flex-col gap-2">
         <Label>Siapa yang ikut?</Label>
-        <Card>
-          <CardContent className="flex flex-wrap gap-2 pt-4">
-            {friends.map((f) => {
-              const isSelected = selected.has(f.id);
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => toggle(f.id)}
-                  className={cn(
-                    "flex items-center gap-2 rounded-full border py-1 pr-3 pl-1 text-sm transition-colors",
-                    isSelected
-                      ? "border-primary bg-primary/10 text-foreground"
-                      : "border-border text-muted-foreground",
-                  )}
-                >
+        <div className="flex gap-4 overflow-x-auto p-4">
+          {friends.map((f) => {
+            const isSelected = selected.has(f.id);
+            return (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => toggle(f.id)}
+                className="flex w-14 shrink-0 flex-col items-center gap-1.5 text-center"
+              >
+                <div className="relative">
                   <ParticipantAvatar
                     name={f.name}
                     color={f.avatarColor ?? colorForName(f.name)}
-                    className="size-6"
+                    className={cn(
+                      "ring-offset-background size-12 ring-2 ring-offset-2 transition-all",
+                      isSelected
+                        ? "ring-primary opacity-100"
+                        : "ring-transparent opacity-60",
+                    )}
                   />
+                  {isSelected && (
+                    <span className="bg-primary text-primary-foreground ring-background absolute -right-0.5 -bottom-0.5 flex size-5 items-center justify-center rounded-full ring-2">
+                      <Check className="size-3" />
+                    </span>
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "w-full truncate text-xs transition-colors",
+                    isSelected
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground",
+                  )}
+                >
                   {f.name}
-                  {isSelected && <Check className="text-primary size-3.5" />}
-                </button>
-              );
-            })}
-          </CardContent>
-        </Card>
+                </span>
+              </button>
+            );
+          })}
+        </div>
         <p className="text-muted-foreground text-xs">
           {selected.size} orang dipilih
         </p>
