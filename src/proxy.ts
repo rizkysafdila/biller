@@ -5,7 +5,7 @@ import { SESSION_COOKIE, decrypt } from "@/lib/session-token";
 // runtime). It only reads the session cookie to redirect unauthenticated users;
 // the real authorization still happens in the DAL close to the data.
 
-const PUBLIC_PATHS = ["/login"];
+const PUBLIC_PATHS = ["/login", "/register"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
