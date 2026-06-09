@@ -9,14 +9,27 @@ import { colorForName } from "@/lib/colors";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
-export async function createFriend(input: unknown): Promise<ActionResult> {
+export interface NewFriend {
+  id: string;
+  name: string;
+  avatarColor: string | null;
+  isOwner: boolean;
+}
+
+export type CreateFriendResult =
+  | { ok: true; friend: NewFriend }
+  | { ok: false; error: string };
+
+export async function createFriend(
+  input: unknown,
+): Promise<CreateFriendResult> {
   const user = await requireUser();
   const parsed = FriendSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0].message };
   }
   const { name, phone } = parsed.data;
-  await db.friend.create({
+  const friend = await db.friend.create({
     data: {
       userId: user.id,
       name,
@@ -26,7 +39,15 @@ export async function createFriend(input: unknown): Promise<ActionResult> {
   });
   revalidatePath("/friends");
   revalidateUser(user.id);
-  return { ok: true };
+  return {
+    ok: true,
+    friend: {
+      id: friend.id,
+      name: friend.name,
+      avatarColor: friend.avatarColor,
+      isOwner: friend.isOwner,
+    },
+  };
 }
 
 export async function updateFriend(
