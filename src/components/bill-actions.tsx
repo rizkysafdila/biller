@@ -13,14 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { ConfirmDrawer } from "@/components/confirm-drawer";
 
 export function BillActions({
   sessionId,
@@ -73,32 +66,14 @@ export function BillActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Drawer open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Hapus bill ini?</DrawerTitle>
-            <DrawerDescription>
-              Semua item di bill ini akan ikut terhapus.
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={pending}
-            >
-              {pending ? "Menghapus..." : "Hapus"}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setConfirmOpen(false)}
-              disabled={pending}
-            >
-              Batal
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      <ConfirmDrawer
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus bill ini?"
+        description="Semua item di bill ini akan ikut terhapus."
+        onConfirm={handleDelete}
+        pending={pending}
+      />
     </>
   );
 }

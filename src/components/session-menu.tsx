@@ -11,14 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { ConfirmDrawer } from "@/components/confirm-drawer";
 
 export function SessionMenu({ sessionId }: { sessionId: string }) {
   const [pending, startTransition] = useTransition();
@@ -52,32 +45,14 @@ export function SessionMenu({ sessionId }: { sessionId: string }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Drawer open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Hapus sesi ini?</DrawerTitle>
-            <DrawerDescription>
-              Semua bill dan rincian split di sesi ini akan terhapus permanen.
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={pending}
-            >
-              {pending ? "Menghapus..." : "Hapus"}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setConfirmOpen(false)}
-              disabled={pending}
-            >
-              Batal
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      <ConfirmDrawer
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus sesi ini?"
+        description="Semua bill dan rincian split di sesi ini akan terhapus permanen."
+        onConfirm={handleDelete}
+        pending={pending}
+      />
     </>
   );
 }

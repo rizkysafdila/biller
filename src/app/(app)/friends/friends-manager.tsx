@@ -11,14 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { EmptyState } from "@/components/empty-state";
 import { FriendFormDrawer } from "@/components/friend-form-drawer";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { ConfirmDrawer } from "@/components/confirm-drawer";
 
 interface FriendItem {
   id: string;
@@ -146,36 +139,14 @@ export function FriendsManager({ friends }: { friends: FriendItem[] }) {
         onUpdated={() => router.refresh()}
       />
 
-      <Drawer
+      <ConfirmDrawer
         open={deleting !== null}
         onOpenChange={(open) => !open && setDeleting(null)}
-      >
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Hapus {deleting?.name}?</DrawerTitle>
-            <DrawerDescription>
-              Teman ini akan hilang dari daftar. Sesi yang sudah ada tidak
-              terpengaruh.
-            </DrawerDescription>
-          </DrawerHeader>
-          <DrawerFooter>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={pending}
-            >
-              {pending ? "Menghapus..." : "Hapus"}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setDeleting(null)}
-              disabled={pending}
-            >
-              Batal
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+        title={`Hapus ${deleting?.name ?? ""}?`}
+        description="Teman ini akan hilang dari daftar. Sesi yang sudah ada tidak terpengaruh."
+        onConfirm={handleDelete}
+        pending={pending}
+      />
     </div>
   );
 }
