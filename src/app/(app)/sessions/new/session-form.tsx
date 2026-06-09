@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ParticipantAvatar } from "@/components/participant-avatar";
-import { AddFriendDrawer } from "@/components/add-friend-drawer";
+import { FriendFormDrawer } from "@/components/friend-form-drawer";
 import { cn } from "@/lib/utils";
 
 interface FriendOption {
@@ -155,10 +155,12 @@ export function SessionForm({ friends }: { friends: FriendOption[] }) {
         {pending ? "Membuat..." : "Buat sesi"}
       </Button>
 
-      <AddFriendDrawer
+      <FriendFormDrawer
         open={addOpen}
         onOpenChange={setAddOpen}
-        onAdded={(friend) => {
+        showPhone={false}
+        description="Teman baru langsung kepilih buat sesi ini."
+        onCreated={(friend) => {
           setFriendList((prev) => [...prev, friend]);
           setSelected((prev) => new Set(prev).add(friend.id));
         }}

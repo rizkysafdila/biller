@@ -4,14 +4,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Pencil, Trash2, UserPlus, Users } from "lucide-react";
-import { createFriend, updateFriend, deleteFriend } from "@/server/friends";
+import { deleteFriend } from "@/server/friends";
 import { colorForName } from "@/lib/colors";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { EmptyState } from "@/components/empty-state";
+import { FriendFormDrawer } from "@/components/friend-form-drawer";
 import {
   Drawer,
   DrawerContent,
@@ -45,25 +44,6 @@ export function FriendsManager({ friends }: { friends: FriendItem[] }) {
   function openEdit(friend: FriendItem) {
     setEditing(friend);
     setDialogOpen(true);
-  }
-
-  function handleSubmit(formData: FormData) {
-    const input = {
-      name: String(formData.get("name") ?? ""),
-      phone: String(formData.get("phone") ?? ""),
-    };
-    startTransition(async () => {
-      const result = editing
-        ? await updateFriend(editing.id, input)
-        : await createFriend(input);
-      if (result.ok) {
-        toast.success(editing ? "Teman diperbarui." : "Teman ditambahkan.");
-        setDialogOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.error);
-      }
-    });
   }
 
   function handleDelete() {
@@ -158,54 +138,13 @@ export function FriendsManager({ friends }: { friends: FriendItem[] }) {
         </ul>
       )}
 
-      <Drawer open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>{editing ? "Edit teman" : "Tambah teman"}</DrawerTitle>
-            <DrawerDescription>
-              Nama dipakai buat nandain siapa makan apa.
-            </DrawerDescription>
-          </DrawerHeader>
-          <form
-            action={handleSubmit}
-            className="flex flex-col gap-4 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
-          >
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="name">Nama</Label>
-              <Input
-                id="name"
-                name="name"
-                defaultValue={editing?.name ?? ""}
-                placeholder="cth. Budi"
-                required
-                autoFocus
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="phone">No. HP (opsional)</Label>
-              <Input
-                id="phone"
-                name="phone"
-                defaultValue={editing?.phone ?? ""}
-                placeholder="08xx"
-                inputMode="tel"
-              />
-            </div>
-            <div className="flex flex-col gap-2 pt-1">
-              <Button type="submit" disabled={pending}>
-                {pending ? "Menyimpan..." : "Simpan"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDialogOpen(false)}
-              >
-                Batal
-              </Button>
-            </div>
-          </form>
-        </DrawerContent>
-      </Drawer>
+      <FriendFormDrawer
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        friend={editing}
+        onCreated={() => router.refresh()}
+        onUpdated={() => router.refresh()}
+      />
 
       <Drawer
         open={deleting !== null}
