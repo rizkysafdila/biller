@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/dal";
-import { db } from "@/lib/db";
+import { getSessionWithParticipants } from "@/queries/sessions";
 import { colorForName } from "@/lib/colors";
 import { BillForm } from "@/components/bill-form";
 
@@ -11,12 +11,7 @@ export default async function NewBillPage({
 }) {
   const { id } = await params;
   const user = await requireUser();
-  const session = await db.session.findFirst({
-    where: { id, userId: user.id },
-    include: {
-      participants: { include: { friend: true }, orderBy: { createdAt: "asc" } },
-    },
-  });
+  const session = await getSessionWithParticipants(id, user.id);
   if (!session) notFound();
 
   return (

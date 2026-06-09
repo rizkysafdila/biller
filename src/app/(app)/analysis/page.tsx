@@ -1,5 +1,5 @@
 import { requireUser } from "@/lib/dal";
-import { getMonthlySpending } from "@/lib/analytics-view";
+import { getMonthlySpending } from "@/queries/analysis";
 import { SpendAnalysis } from "@/components/spend-analysis";
 
 export default async function AnalysisPage() {

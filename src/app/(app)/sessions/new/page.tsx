@@ -1,14 +1,11 @@
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/dal";
-import { db } from "@/lib/db";
+import { getFriends } from "@/queries/friends";
 import { SessionForm } from "./session-form";
 
 export default async function NewSessionPage() {
   const user = await requireUser();
-  const friends = await db.friend.findMany({
-    where: { userId: user.id },
-    orderBy: [{ isOwner: "desc" }, { createdAt: "asc" }],
-  });
+  const friends = await getFriends(user.id);
 
   // Need at least the owner; the owner Friend is created on first login.
   if (friends.length === 0) redirect("/friends");

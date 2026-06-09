@@ -1,5 +1,5 @@
 import { requireUser } from "@/lib/dal";
-import { getFriends } from "@/lib/queries";
+import { getFriends } from "@/queries/friends";
 import { FriendsManager } from "./friends-manager";
 
 export default async function FriendsPage() {

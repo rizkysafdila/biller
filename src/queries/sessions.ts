@@ -1,13 +1,71 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { db } from "./db";
-import { userDataTag } from "./cache";
-import { colorForName } from "./colors";
+import { db } from "@/lib/db";
+import { userDataTag } from "@/lib/cache";
+import { colorForName } from "@/lib/colors";
 import {
   computeSessionSettlement,
   type SessionInput,
   type SessionSettlement,
 } from "@/domain/settlement";
+
+// Cached read layer (Next.js Data Cache). Each query takes `userId` as an
+// argument (read via requireUser() in the page, outside the cache) so the cached
+// functions never touch cookies/headers. Results are plain (serializable)
+// objects. Correctness comes from the per-user tag; `revalidate` is a safety net.
+
+export function getDashboardData(userId: string) {
+  return unstable_cache(
+    async () => {
+      const [sessions, friendCount] = await Promise.all([
+        db.session.findMany({
+          where: { userId },
+          orderBy: { date: "desc" },
+          take: 5,
+          include: {
+            _count: { select: { bills: true } },
+            participants: { include: { friend: true }, take: 6 },
+          },
+        }),
+        db.friend.count({ where: { userId, isOwner: false } }),
+      ]);
+      return { sessions, friendCount };
+    },
+    ["dashboard", userId],
+    { tags: [userDataTag(userId)], revalidate: 3600 },
+  )();
+}
+
+export function getSessionList(userId: string) {
+  return unstable_cache(
+    async () =>
+      db.session.findMany({
+        where: { userId },
+        orderBy: { date: "desc" },
+        include: {
+          _count: { select: { bills: true, participants: true } },
+          participants: { include: { friend: true }, take: 6 },
+        },
+      }),
+    ["session-list", userId],
+    { tags: [userDataTag(userId)], revalidate: 3600 },
+  )();
+}
+
+/** Load a session owned by `userId` with its participants. Uncached: feeds the
+ * bill forms (new/edit). Returns the raw Prisma object or null. */
+export function getSessionWithParticipants(sessionId: string, userId: string) {
+  return db.session.findFirst({
+    where: { id: sessionId, userId },
+    include: {
+      participants: { include: { friend: true }, orderBy: { createdAt: "asc" } },
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Session detail view (participants + bills + computed settlement).
+// ---------------------------------------------------------------------------
 
 export interface ParticipantView {
   id: string; // SessionParticipant id

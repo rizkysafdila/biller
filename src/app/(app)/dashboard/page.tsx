@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Plus, ArrowRight, ReceiptText } from "lucide-react";
 import { requireUser } from "@/lib/dal";
-import { getDashboardData } from "@/lib/queries";
+import { getDashboardData } from "@/queries/sessions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";

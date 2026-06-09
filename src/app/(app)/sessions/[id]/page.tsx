@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, Plus, Store } from "lucide-react";
 import { requireUser } from "@/lib/dal";
-import { getSessionView } from "@/lib/session-view";
+import { getSessionView } from "@/queries/sessions";
 import { SettlementSummary } from "@/components/settlement-summary";
 import { BillCard } from "@/components/bill-card";
 import { ShareToggle } from "@/components/share-toggle";

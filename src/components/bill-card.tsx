@@ -5,7 +5,7 @@ import { ParticipantAvatar } from "@/components/participant-avatar";
 import { BillActions } from "@/components/bill-actions";
 import { formatIDR } from "@/domain/money";
 import { sum } from "@/domain/money";
-import type { BillView, ParticipantView } from "@/lib/session-view";
+import type { BillView, ParticipantView } from "@/queries/sessions";
 
 export function BillCard({
   sessionId,

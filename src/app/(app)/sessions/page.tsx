@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus, ReceiptText, Store, Users } from "lucide-react";
 import { requireUser } from "@/lib/dal";
-import { getSessionList } from "@/lib/queries";
+import { getSessionList } from "@/queries/sessions";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { ParticipantAvatar } from "@/components/participant-avatar";

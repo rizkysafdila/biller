@@ -2,7 +2,7 @@ import { ArrowRight, Wallet, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { formatIDR } from "@/domain/money";
-import type { ParticipantView } from "@/lib/session-view";
+import type { ParticipantView } from "@/queries/sessions";
 import type { SessionSettlement } from "@/domain/settlement";
 
 /**

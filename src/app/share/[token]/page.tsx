@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Receipt } from "lucide-react";
-import { getSharedSessionView } from "@/lib/session-view";
+import { getSharedSessionView } from "@/queries/sessions";
 import { SettlementSummary } from "@/components/settlement-summary";
 import { BillCard } from "@/components/bill-card";
 import { ParticipantAvatar } from "@/components/participant-avatar";

@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { getAllSessionViews } from "./session-view";
-import { userDataTag } from "./cache";
+import { getAllSessionViews } from "@/queries/sessions";
+import { userDataTag } from "@/lib/cache";
 import {
   aggregateMonthlySpending,
   type MonthlySpending,
