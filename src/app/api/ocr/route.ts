@@ -4,7 +4,7 @@ import { parseReceipt } from "@/lib/ocr/gemini";
 import { uploadReceiptImage } from "@/lib/blob";
 import {
   getOcrLimit,
-  getTodayOcrCount,
+  getWeekOcrCount,
   incrementOcrUsage,
 } from "@/lib/ocr-usage";
 
@@ -28,12 +28,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // Enforce the per-user daily receipt-scan limit.
+  // Enforce the per-user weekly receipt-scan limit.
   const limit = getOcrLimit(user);
-  const used = await getTodayOcrCount(user.id);
+  const used = await getWeekOcrCount(user.id);
   if (used >= limit) {
     return NextResponse.json(
-      { error: "Batas scan struk harian tercapai." },
+      { error: "Batas scan struk mingguan tercapai." },
       { status: 429 },
     );
   }
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       parseReceipt(base64, file.type),
     ]);
 
-    // Only count successful scans against the daily limit.
+    // Only count successful scans against the weekly limit.
     await incrementOcrUsage(user.id);
 
     return NextResponse.json({ parsed, imageUrl });

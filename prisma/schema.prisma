@@ -34,15 +34,16 @@ model User {
   createdAt    DateTime  @default(now())
   // Suspend/disable: null = active. Set by an admin to lock the account out.
   disabledAt   DateTime?
-  // Per-user OCR/day override; null = use the global default (OCR_DAILY_LIMIT).
-  ocrDailyLimit Int?
+  // Per-user weekly OCR override; null = use the global default (OCR_WEEKLY_LIMIT).
+  ocrWeeklyLimit Int?
 
   friends   Friend[]
   sessions  Session[]
   ocrUsages OcrUsage[]
 }
 
-// Per-user, per-day receipt-scan counter, used to enforce the daily OCR limit.
+// Per-user, per-day receipt-scan counter. Summed over the current week to
+// enforce the weekly OCR limit (daily granularity is kept for reporting).
 model OcrUsage {
   id     String   @id @default(cuid())
   userId String
