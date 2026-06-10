@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/dal";
 import { parseReceipt } from "@/lib/ocr/gemini";
 import { uploadReceiptImage } from "@/lib/blob";
+import {
+  getOcrLimit,
+  getTodayOcrCount,
+  incrementOcrUsage,
+} from "@/lib/ocr-usage";
 
 export const runtime = "nodejs";
 // Receipt parsing can take a few seconds.
@@ -13,6 +18,24 @@ export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Tidak terautentikasi." }, { status: 401 });
+  }
+
+  // Suspended accounts cannot scan receipts.
+  if (user.disabledAt) {
+    return NextResponse.json(
+      { error: "Akun dinonaktifkan. Hubungi admin." },
+      { status: 403 },
+    );
+  }
+
+  // Enforce the per-user daily receipt-scan limit.
+  const limit = getOcrLimit(user);
+  const used = await getTodayOcrCount(user.id);
+  if (used >= limit) {
+    return NextResponse.json(
+      { error: "Batas scan struk harian tercapai." },
+      { status: 429 },
+    );
   }
 
   const formData = await request.formData();
@@ -36,6 +59,9 @@ export async function POST(request: Request) {
       uploadReceiptImage(file).catch(() => null),
       parseReceipt(base64, file.type),
     ]);
+
+    // Only count successful scans against the daily limit.
+    await incrementOcrUsage(user.id);
 
     return NextResponse.json({ parsed, imageUrl });
   } catch (error) {

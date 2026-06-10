@@ -15,15 +15,44 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// Admin of the separate management console (patungan-console). Kept in its own
+// table rather than as a flag on User, so console access is fully decoupled
+// from app accounts.
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
   name         String?
   passwordHash String?
   createdAt    DateTime  @default(now())
+  // Suspend/disable: null = active. Set by an admin to lock the account out.
+  disabledAt   DateTime?
+  // Per-user OCR/day override; null = use the global default (OCR_DAILY_LIMIT).
+  ocrDailyLimit Int?
 
-  friends  Friend[]
-  sessions Session[]
+  friends   Friend[]
+  sessions  Session[]
+  ocrUsages OcrUsage[]
+}
+
+// Per-user, per-day receipt-scan counter, used to enforce the daily OCR limit.
+model OcrUsage {
+  id     String   @id @default(cuid())
+  userId String
+  day    DateTime @db.Date
+  count  Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, day])
+  @@index([userId])
 }
 
 model Friend {

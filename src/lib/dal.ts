@@ -13,7 +13,11 @@ import { db } from "./db";
 export const getCurrentUser = cache(async () => {
   const session = await getSession();
   if (!session?.userId) return null;
-  return db.user.findUnique({ where: { id: session.userId } });
+  const user = await db.user.findUnique({ where: { id: session.userId } });
+  // Suspended by an admin: treat as logged out so an active cookie is kicked on
+  // the next request instead of waiting out the 30-day session.
+  if (user?.disabledAt) return null;
+  return user;
 });
 
 /** Require an authenticated owner, redirecting to /login otherwise. */

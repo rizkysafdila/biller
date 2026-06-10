@@ -115,6 +115,11 @@ export async function login(
     });
   }
 
+  // Suspended by an admin: valid credentials, but no session is created.
+  if (user.disabledAt) {
+    return { error: "Akun dinonaktifkan. Hubungi admin." };
+  }
+
   await ensureOwnerFriend(user.id, user.name ?? "Kamu");
   await createSession(user.id);
   redirect("/dashboard");
