@@ -8,7 +8,7 @@ import type { User } from "@prisma/client";
 // (Jakarta). Kept out of the route to stay thin and testable.
 
 // Fallback when neither the per-user override nor OCR_WEEKLY_LIMIT is set.
-const DEFAULT_OCR_WEEKLY_LIMIT = 20;
+const DEFAULT_OCR_WEEKLY_LIMIT = 10;
 const JAKARTA_OFFSET_MS = 7 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
