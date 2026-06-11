@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { cn } from "@/lib/utils";
+import { compressImage } from "@/lib/image-compress";
 
 interface ParticipantOption {
   id: string;
@@ -138,8 +139,9 @@ export function BillForm({
   async function handleScan(file: File) {
     setScanning(true);
     try {
+      const compressed = await compressImage(file);
       const body = new FormData();
-      body.append("image", file);
+      body.append("image", compressed);
       const res = await fetch("/api/ocr", { method: "POST", body });
       const data = await res.json();
       if (!res.ok) {
