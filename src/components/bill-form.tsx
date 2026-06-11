@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useTransition, type ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Camera,
@@ -82,7 +81,6 @@ export function BillForm({
   participants: ParticipantOption[];
   initial?: BillFormInitial;
 }) {
-  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [scanning, setScanning] = useState(false);
   const cameraRef = useRef<HTMLInputElement>(null);

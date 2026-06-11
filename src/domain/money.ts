@@ -39,7 +39,7 @@ export function distributeProportionally(
   const exactShares = effectiveWeights.map((w) => (total * w) / effectiveSum);
   const floors = exactShares.map(Math.floor);
   const distributed = sum(floors);
-  let remainder = total - distributed;
+  const remainder = total - distributed;
 
   const result = [...floors];
 
