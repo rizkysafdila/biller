@@ -86,7 +86,9 @@ model Session {
   participants SessionParticipant[]
   bills        Bill[]
 
-  @@index([userId])
+  // Composite to back the common "user's sessions, newest first" access pattern
+  // (dashboard + session list) with an index-ordered scan instead of a sort.
+  @@index([userId, date])
 }
 
 model SessionParticipant {

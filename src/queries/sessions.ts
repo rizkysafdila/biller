@@ -247,7 +247,7 @@ export async function getAllSessionViews(userId: string): Promise<SessionView[]>
 export async function getSharedSessionView(
   token: string,
 ): Promise<SessionView | null> {
-  const session = await db.session.findFirst({
+  const session = await db.session.findUnique({
     where: { shareToken: token },
     include: includeShape,
   });

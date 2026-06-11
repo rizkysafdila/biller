@@ -79,16 +79,24 @@ export async function updateBill(
   input: unknown,
 ): Promise<ActionResult> {
   const user = await requireUser();
+  // One round-trip: the bill, its session ownership, and the session's valid
+  // participant ids (needed to filter shares) all come back together.
   const bill = await db.bill.findUnique({
     where: { id: billId },
-    include: { session: { select: { id: true, userId: true } } },
+    include: {
+      session: {
+        select: {
+          id: true,
+          userId: true,
+          participants: { select: { id: true } },
+        },
+      },
+    },
   });
   if (!bill || bill.session.userId !== user.id) {
     return { ok: false, error: "Bill tidak ditemukan." };
   }
-
-  const owned = await loadOwnedSession(bill.session.id, user.id);
-  if (!owned) return { ok: false, error: "Sesi tidak ditemukan." };
+  const validParticipants = new Set(bill.session.participants.map((p) => p.id));
 
   const parsed = BillSchema.safeParse(input);
   if (!parsed.success) {
@@ -96,7 +104,7 @@ export async function updateBill(
   }
   const data = parsed.data;
   const paidById =
-    data.paidById && owned.participantIds.has(data.paidById)
+    data.paidById && validParticipants.has(data.paidById)
       ? data.paidById
       : null;
 
@@ -112,7 +120,7 @@ export async function updateBill(
         serviceAmount: data.serviceAmount,
         discountAmount: data.discountAmount,
         receiptImageUrl: data.receiptImageUrl || null,
-        items: { create: buildItemsCreate(data, owned.participantIds) },
+        items: { create: buildItemsCreate(data, validParticipants) },
       },
     }),
   ]);
