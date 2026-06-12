@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/dal";
 import { AppNav } from "@/components/app-nav";
 import { LogoutButton } from "@/components/logout-button";
 import { InstallPrompt } from "@/components/install-prompt";
+import { WelcomeModal } from "@/components/welcome-modal";
 import { NavProgress } from "@/components/nav-progress";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -35,6 +36,7 @@ export default async function AppLayout({
 
       <main className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-24">
         <InstallPrompt />
+        <WelcomeModal />
         {children}
       </main>
 
