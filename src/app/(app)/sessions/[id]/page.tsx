@@ -6,6 +6,7 @@ import { getSessionView } from "@/queries/sessions";
 import { SettlementSummary } from "@/components/settlement-summary";
 import { BillCard } from "@/components/bill-card";
 import { ShareToggle } from "@/components/share-toggle";
+import { buildWhatsappSummary } from "@/domain/whatsapp-summary";
 import { SessionMenu } from "@/components/session-menu";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { EmptyState } from "@/components/empty-state";
@@ -41,7 +42,11 @@ export default async function SessionDetailPage({
             </p>
           </div>
           <div className="flex shrink-0 gap-2">
-            <ShareToggle sessionId={view.id} initialToken={view.shareToken} />
+            <ShareToggle
+              sessionId={view.id}
+              initialToken={view.shareToken}
+              summary={buildWhatsappSummary(view)}
+            />
             <SessionMenu sessionId={view.id} />
           </div>
         </div>
