@@ -26,6 +26,16 @@ model Admin {
   createdAt    DateTime @default(now())
 }
 
+// Key-value application settings shared between the main app and the console
+// (e.g. the Gemini API key + model, set by an admin from the console). Secret
+// values are stored encrypted (see lib/settings-crypto). Key-value rather than
+// fixed columns so new settings need no migration.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique

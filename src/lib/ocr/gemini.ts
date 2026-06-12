@@ -1,6 +1,7 @@
 import "server-only";
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { ParsedReceiptSchema, type ParsedReceipt } from "@/schemas/bill";
+import { getGeminiConfig } from "@/lib/settings";
 
 // Receipt photo -> structured JSON via Gemini's constrained JSON output.
 
@@ -42,14 +43,14 @@ export async function parseReceipt(
   imageBase64: string,
   mimeType: string,
 ): Promise<ParsedReceipt> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const { apiKey, model: modelName } = await getGeminiConfig();
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY belum diset di server.");
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: process.env.GEMINI_MODEL ?? "gemini-2.0-flash",
+    model: modelName,
     generationConfig: {
       responseMimeType: "application/json",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
