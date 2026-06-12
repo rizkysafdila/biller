@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { Receipt } from "lucide-react";
+import { Receipt, User } from "lucide-react";
 import { requireUser } from "@/lib/dal";
 import { AppNav } from "@/components/app-nav";
-import { LogoutButton } from "@/components/logout-button";
 import { InstallPrompt } from "@/components/install-prompt";
 import { WelcomeModal } from "@/components/welcome-modal";
 import { NavProgress } from "@/components/nav-progress";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 
 export default async function AppLayout({
   children,
@@ -27,10 +26,15 @@ export default async function AppLayout({
             </span>
             Patungan
           </Link>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <LogoutButton />
-          </div>
+          <Button
+            render={<Link href="/account" aria-label="Akun" />}
+            nativeButton={false}
+            variant="ghost"
+            size="icon-sm"
+            className="text-muted-foreground"
+          >
+            <User />
+          </Button>
         </div>
       </header>
 

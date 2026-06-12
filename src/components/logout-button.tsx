@@ -19,13 +19,11 @@ export function LogoutButton() {
   return (
     <>
       <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label="Keluar"
-        className="text-muted-foreground"
+        variant="outline"
+        className="text-destructive w-full justify-start"
         onClick={() => setOpen(true)}
       >
-        <LogOut />
+        <LogOut /> Keluar
       </Button>
 
       <Drawer open={open} onOpenChange={setOpen}>
