@@ -6,6 +6,7 @@ import { SettlementSummary } from "@/components/settlement-summary";
 import { BillCard } from "@/components/bill-card";
 import { ParticipantAvatar } from "@/components/participant-avatar";
 import { formatDate } from "@/lib/format";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Hasil Split — Patungan",
@@ -75,15 +76,15 @@ export default async function SharedSessionPage({
           Dibuat dengan Patungan
           <br />
           oleh{" "}
-          <a
+          <Link
             href="https://rizkysafdila.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground inline-flex items-center gap-0.5 font-medium underline underline-offset-2"
+            className="text-foreground hover:text-blue-500 inline-flex items-center gap-0.5 font-medium transition-colors"
           >
             @rizkysafdila
             <ArrowUpRight className="size-3" />
-          </a>
+          </Link>
         </p>
       </main>
     </div>
