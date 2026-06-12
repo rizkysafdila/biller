@@ -5,6 +5,7 @@ import { AppNav } from "@/components/app-nav";
 import { InstallPrompt } from "@/components/install-prompt";
 import { WelcomeModal } from "@/components/welcome-modal";
 import { NavProgress } from "@/components/nav-progress";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 
 export default async function AppLayout({
@@ -26,15 +27,18 @@ export default async function AppLayout({
             </span>
             Patungan
           </Link>
-          <Button
-            render={<Link href="/account" aria-label="Akun" />}
-            nativeButton={false}
-            variant="ghost"
-            size="icon-sm"
-            className="text-muted-foreground"
-          >
-            <User />
-          </Button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <Button
+              render={<Link href="/account" aria-label="Akun" />}
+              nativeButton={false}
+              variant="ghost"
+              size="icon-sm"
+              className="text-muted-foreground"
+            >
+              <User />
+            </Button>
+          </div>
         </div>
       </header>
 

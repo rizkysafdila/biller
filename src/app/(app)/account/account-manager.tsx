@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { changePassword, updateProfile } from "@/server/account";
+import { changePassword } from "@/server/account";
 import { colorForName } from "@/lib/colors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ParticipantAvatar } from "@/components/participant-avatar";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoutButton } from "@/components/logout-button";
 
 export function AccountManager({
@@ -20,35 +18,24 @@ export function AccountManager({
   name: string;
   email: string;
 }) {
-  const router = useRouter();
-  const [savingProfile, startSaveProfile] = useTransition();
   const [savingPassword, startSavePassword] = useTransition();
 
-  const [nameValue, setNameValue] = useState(name);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
-  const nameChanged = nameValue.trim() !== name && nameValue.trim().length > 0;
-
-  function handleSaveProfile() {
-    startSaveProfile(async () => {
-      const result = await updateProfile({ name: nameValue });
-      if (result.ok) {
-        toast.success("Profil tersimpan.");
-        router.refresh();
-      } else {
-        toast.error(result.error);
-      }
-    });
-  }
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   function handleChangePassword() {
     startSavePassword(async () => {
-      const result = await changePassword({ currentPassword, newPassword });
+      const result = await changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
       if (result.ok) {
         toast.success("Password diperbarui.");
         setCurrentPassword("");
         setNewPassword("");
+        setConfirmPassword("");
       } else {
         toast.error(result.error);
       }
@@ -59,50 +46,15 @@ export function AccountManager({
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <ParticipantAvatar
-          name={nameValue || email}
-          color={colorForName(nameValue || email)}
+          name={name || email}
+          color={colorForName(name || email)}
           className="size-12"
         />
         <div className="min-w-0">
-          <p className="truncate font-semibold">{nameValue || "Akun"}</p>
+          <p className="truncate font-semibold">{name || "Akun"}</p>
           <p className="text-muted-foreground truncate text-sm">{email}</p>
         </div>
       </div>
-
-      {/* Profile */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Profil</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Nama</Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              value={nameValue}
-              onChange={(e) => setNameValue(e.target.value)}
-              maxLength={40}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" value={email} disabled readOnly />
-            <p className="text-muted-foreground text-xs">
-              Email tidak bisa diubah.
-            </p>
-          </div>
-          <Button
-            onClick={handleSaveProfile}
-            disabled={!nameChanged || savingProfile}
-            className="w-full"
-          >
-            {savingProfile ? "Menyimpan..." : "Simpan"}
-          </Button>
-        </CardContent>
-      </Card>
 
       {/* Password */}
       <Card>
@@ -133,30 +85,34 @@ export function AccountManager({
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="confirmPassword">Konfirmasi password baru</Label>
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            {confirmPassword.length > 0 && confirmPassword !== newPassword && (
+              <p className="text-destructive text-xs">
+                Konfirmasi password tidak cocok.
+              </p>
+            )}
+          </div>
           <Button
             onClick={handleChangePassword}
             disabled={
               savingPassword ||
               currentPassword.length === 0 ||
-              newPassword.length < 8
+              newPassword.length < 8 ||
+              confirmPassword !== newPassword
             }
             className="w-full"
           >
             {savingPassword ? "Menyimpan..." : "Ganti password"}
           </Button>
-        </CardContent>
-      </Card>
-
-      {/* Appearance */}
-      <Card>
-        <CardContent className="flex items-center justify-between">
-          <div>
-            <p className="font-medium">Tema</p>
-            <p className="text-muted-foreground text-sm">
-              Mode terang atau gelap.
-            </p>
-          </div>
-          <ThemeToggle />
         </CardContent>
       </Card>
 

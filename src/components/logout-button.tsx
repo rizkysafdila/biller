@@ -20,7 +20,7 @@ export function LogoutButton() {
     <>
       <Button
         variant="outline"
-        className="text-destructive w-full justify-start"
+        className="text-destructive w-full"
         onClick={() => setOpen(true)}
       >
         <LogOut /> Keluar
