@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Receipt } from "lucide-react";
+import { Receipt, ArrowUpRight } from "lucide-react";
 import { getSharedSessionView } from "@/queries/sessions";
 import { SettlementSummary } from "@/components/settlement-summary";
 import { BillCard } from "@/components/bill-card";
@@ -73,6 +73,17 @@ export default async function SharedSessionPage({
 
         <p className="text-muted-foreground mt-8 text-center text-xs">
           Dibuat dengan Patungan
+          <br />
+          oleh{" "}
+          <a
+            href="https://rizkysafdila.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground inline-flex items-center gap-0.5 font-medium underline underline-offset-2"
+          >
+            @rizkysafdila
+            <ArrowUpRight className="size-3" />
+          </a>
         </p>
       </main>
     </div>
