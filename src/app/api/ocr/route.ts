@@ -7,6 +7,7 @@ import {
   getWeekOcrCount,
   incrementOcrUsage,
 } from "@/lib/ocr-usage";
+import { clientErrorMessage } from "@/lib/errors";
 
 export const runtime = "nodejs";
 // Receipt parsing can take a few seconds.
@@ -65,8 +66,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ parsed, imageUrl });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Gagal memproses struk.";
+    // Log the real error server-side; only expose details to the client in dev.
+    console.error("OCR failed:", error);
+    const message = clientErrorMessage(error, "Gagal memproses struk.");
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
